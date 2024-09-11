@@ -17,32 +17,32 @@
 # limitations under the License.
 #
 
-import numpy as np
 import os
 from glob import glob
-
 from typing import Union
-from nomad.utils import extract_section
+
+import numpy as np
 from nomad.datamodel import EntryArchive
-from runschema.run import Run, Program
 from nomad.datamodel.metainfo.workflow import Link, TaskReference
+from nomad.parsing.file_parser import Quantity, TextParser
+from nomad.units import ureg
+from nomad.utils import extract_section
+from runschema.run import Program, Run
 from simulationworkflowschema import (
+    XS,
     DFTPlusGW,
     DFTPlusGWMethod,
     DFTPlusTBPlusDMFT,
     DFTPlusTBPlusDMFTMethod,
-    XS,
-    XSMethod,
-    FirstPrinciplesPlusTB,
-    FirstPrinciplesPlusTBMethod,
     DMFTPlusMaxEnt,
     DMFTPlusMaxEntMethod,
+    FirstPrinciplesPlusTB,
+    FirstPrinciplesPlusTBMethod,
     PhotonPolarization,
     PhotonPolarizationMethod,
     PhotonPolarizationResults,
+    XSMethod,
 )
-from nomad.units import ureg
-from nomad.parsing.file_parser import TextParser, Quantity
 
 
 def get_files(pattern: str, filepath: str, stripname: str = '', deep: bool = True):
@@ -672,7 +672,7 @@ class WOutParser(TextParser):
             Quantity('labels', r'\|\s*([A-Z][a-z]*)', repeats=True),
             Quantity(
                 'positions',
-                rf'\|\s*([\-\d\.]+)\s*([\-\d\.]+)\s*([\-\d\.]+)',
+                r'\|\s*([\-\d\.]+)\s*([\-\d\.]+)\s*([\-\d\.]+)',
                 repeats=True,
                 dtype=float,
             ),
@@ -697,7 +697,7 @@ class WOutParser(TextParser):
             # Method quantities
             Quantity(
                 'k_mesh',
-                rf'\s*(K-POINT GRID[\s\S]+?)(?:-\s*MAIN)',
+                r'\s*(K-POINT GRID[\s\S]+?)(?:-\s*MAIN)',
                 repeats=False,
                 sub_parser=TextParser(quantities=kmesh_quantities),
             ),
@@ -721,7 +721,7 @@ class WOutParser(TextParser):
             ),
             Quantity(
                 'energy_windows',
-                rf'(\|\s*Energy\s*Windows\s*\|[\s\S]+?)(?:Number of target bands to extract:)',
+                r'(\|\s*Energy\s*Windows\s*\|[\s\S]+?)(?:Number of target bands to extract:)',
                 repeats=False,
                 sub_parser=TextParser(quantities=disentangle_quantities),
             ),
@@ -751,5 +751,5 @@ class HrParser(TextParser):
     def init_quantities(self):
         self._quantities = [
             Quantity('degeneracy_factors', r'\s*written on[\s\w]*:\d*:\d*\s*([\d\s]+)'),
-            Quantity('hoppings', rf'\s*([-\d\s.]+)', repeats=False),
+            Quantity('hoppings', r'\s*([-\d\s.]+)', repeats=False),
         ]

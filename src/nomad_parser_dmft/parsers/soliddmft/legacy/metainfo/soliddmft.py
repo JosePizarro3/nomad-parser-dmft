@@ -17,21 +17,19 @@
 # limitations under the License.
 #
 import numpy as np
-
+import runschema.calculation  # pylint: disable=unused-import
+import runschema.method  # pylint: disable=unused-import
+import runschema.run  # pylint: disable=unused-import
+import runschema.system  # pylint: disable=unused-import
+from nomad.datamodel.hdf5 import HDF5Reference
 from nomad.metainfo import (  # pylint: disable=unused-import
+    JSON,
     MSection,
     Package,
     Quantity,
     Section,
     SubSection,
-    JSON,
 )
-from nomad.datamodel.hdf5 import HDF5Reference
-import runschema.run  # pylint: disable=unused-import
-import runschema.calculation  # pylint: disable=unused-import
-import runschema.method  # pylint: disable=unused-import
-import runschema.system  # pylint: disable=unused-import
-
 
 m_package = Package()
 

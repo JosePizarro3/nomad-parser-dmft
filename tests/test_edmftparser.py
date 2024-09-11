@@ -17,8 +17,8 @@
 #
 
 import pytest
-
 from nomad.datamodel import EntryArchive
+
 from nomad_parser_dmft.parsers.edmft.parser import EDMFTParser
 
 

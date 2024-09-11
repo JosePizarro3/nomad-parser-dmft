@@ -14,7 +14,6 @@ from nomad.config import config
 
 from nomad_parser_dmft.parsers.edmft.legacy.parser import LegacyEDMFTParser
 
-
 configuration = config.get_plugin_entry_point(
     'nomad_parser_dmft:edmft_parser_entry_point'
 )
@@ -27,6 +26,5 @@ class EDMFTParser:
         archive: 'EntryArchive',
         logger: 'BoundLogger',
     ) -> None:
-
         print('hey EDMFT')
         LegacyEDMFTParser().parse(filepath, archive, logger)

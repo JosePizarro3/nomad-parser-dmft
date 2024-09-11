@@ -16,10 +16,10 @@
 # limitations under the License.
 #
 
-import pytest
-
 import numpy as np
+import pytest
 from nomad.datamodel import EntryArchive
+
 from nomad_parser_dmft.parsers.soliddmft.parser import SolidDMFTParser
 
 

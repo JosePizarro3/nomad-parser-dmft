@@ -14,7 +14,6 @@ from nomad.config import config
 
 from nomad_parser_dmft.parsers.soliddmft.legacy.parser import LegacySolidDMFTParser
 
-
 configuration = config.get_plugin_entry_point(
     'nomad_parser_dmft:soliddmft_parser_entry_point'
 )

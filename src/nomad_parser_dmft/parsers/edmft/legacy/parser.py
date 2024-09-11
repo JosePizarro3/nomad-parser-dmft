@@ -16,39 +16,44 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-import numpy as np
-import os
 import logging
+import os
 import re
-from scipy import optimize
 
-from nomad.units import ureg
-from nomad.parsing.file_parser import TextParser, Quantity, DataTextParser
+import numpy as np
 from nomad.datamodel import EntryArchive
-
-from runschema.run import Run, Program
-from runschema.system import System, Atoms
-from runschema.method import (
-    Method,
-    HubbardKanamoriModel,
-    FrequencyMesh,
-    DMFT,
-    AtomParameters,
-)
+from nomad.parsing.file_parser import DataTextParser, Quantity, TextParser
+from nomad.units import ureg
 from runschema.calculation import (
     Calculation,
-    ScfIteration,
-    Energy,
-    EnergyEntry,
     Charges,
-    GreensFunctions,
     Dos,
     DosValues,
+    Energy,
+    EnergyEntry,
+    GreensFunctions,
+    ScfIteration,
 )
+from runschema.method import (
+    DMFT,
+    AtomParameters,
+    FrequencyMesh,
+    HubbardKanamoriModel,
+    Method,
+)
+from runschema.run import Program, Run
+from runschema.system import Atoms, System
+from scipy import optimize
 from simulationworkflowschema import SinglePoint
-from nomad.parsing.file_parser import DataTextParser
-from nomad_parser_dmft.parsers.edmft.legacy.metainfo.edmft import x_edmft_method_parameters
-from nomad_parser_dmft.parsers.utils import get_files, BeyondDFTWorkflowsParser, Wien2kStructParser
+
+from nomad_parser_dmft.parsers.edmft.legacy.metainfo.edmft import (
+    x_edmft_method_parameters,
+)
+from nomad_parser_dmft.parsers.utils import (
+    BeyondDFTWorkflowsParser,
+    Wien2kStructParser,
+    get_files,
+)
 
 
 class OutParser(TextParser):
@@ -485,9 +490,7 @@ class LegacyEDMFTParser(BeyondDFTWorkflowsParser):
                 sec_energy = Energy()
                 sec_scf_iteration.energy = sec_energy
                 sec_energy.chemical_potential = data[3] * ureg.eV
-                sec_energy.double_counting = EnergyEntry(
-                    value=data[4] * ureg.eV
-                )
+                sec_energy.double_counting = EnergyEntry(value=data[4] * ureg.eV)
                 sec_energy.total = EnergyEntry(value=data[5] * ureg.rydberg)
                 sec_energy.free = EnergyEntry(value=data[7] * ureg.rydberg)
                 # Lattice and impurity occupations

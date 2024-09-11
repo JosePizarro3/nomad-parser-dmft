@@ -16,36 +16,39 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-import numpy as np
-import os
 import logging
-import h5py
+import os
 import re
+from typing import Any, Union
 
-from typing import Any, Dict, Union
+import h5py
+import numpy as np
 from nomad.units import ureg
-from simulationworkflowschema import SinglePoint
-from runschema.run import Run, Program
 from runschema.calculation import (
     Calculation,
-    ScfIteration,
+    Dos,
+    DosValues,
     Energy,
     EnergyEntry,
     GreensFunctions,
-    Dos,
-    DosValues,
+    ScfIteration,
 )
 from runschema.method import (
-    Method,
+    DMFT,
     AtomParameters,
+    FrequencyMesh,
     HubbardKanamoriModel,
     KMesh,
-    FrequencyMesh,
+    Method,
     TimeMesh,
-    DMFT,
 )
-from runschema.system import System, Atoms
-from nomad_parser_dmft.parsers.soliddmft.legacy.metainfo.soliddmft import x_soliddmft_observables_parameters
+from runschema.run import Program, Run
+from runschema.system import Atoms, System
+from simulationworkflowschema import SinglePoint
+
+from nomad_parser_dmft.parsers.soliddmft.legacy.metainfo.soliddmft import (
+    x_soliddmft_observables_parameters,
+)
 from nomad_parser_dmft.parsers.utils import numpy_type_to_json_serializable
 
 
@@ -385,8 +388,8 @@ class LegacySolidDMFTParser:
             sec_scc: Calculation,
             i_scf: int,
             n_impurities: int,
-            convergence_obs: Dict[str, Any],
-            observables: Dict[str, Any],
+            convergence_obs: dict[str, Any],
+            observables: dict[str, Any],
             farg: str = 'r+b',
         ):
             """Parses the scf iterations.
@@ -397,8 +400,8 @@ class LegacySolidDMFTParser:
                 sec_scc (Calculation): Calculation section.
                 i_scf (int): Scf iteration index.
                 n_impurities (int): Number of impurities.
-                convergence_obs (Dict[str, Any]): Convergence of observables.
-                observables (Dict[str, Any]): Observables.
+                convergence_obs (dict[str, Any]): Convergence of observables.
+                observables (dict[str, Any]): Observables.
             """
             sec_scf = ScfIteration()
             sec_scc.scf_iteration.append(sec_scf)

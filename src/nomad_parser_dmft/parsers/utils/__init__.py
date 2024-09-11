@@ -16,4 +16,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .utils import get_files, numpy_type_to_json_serializable, BeyondDFTWorkflowsParser, Wien2kStructParser, WOutParser, HrParser
+from .utils import (
+    BeyondDFTWorkflowsParser,
+    HrParser,
+    Wien2kStructParser,
+    WOutParser,
+    get_files,
+    numpy_type_to_json_serializable,
+)

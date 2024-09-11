@@ -16,36 +16,40 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-import numpy as np
-import os
 import logging
-import h5py
+import os
 import re
 
+import h5py
+import numpy as np
+from nomad.parsing.file_parser import Quantity, TextParser
 from nomad.units import ureg
-from nomad.parsing.file_parser import TextParser, Quantity
-from simulationworkflowschema import SinglePoint
-from runschema.run import Run, Program
-from runschema.calculation import Calculation, ScfIteration, Energy, GreensFunctions
+from runschema.calculation import Calculation, Energy, GreensFunctions, ScfIteration
 from runschema.method import (
-    Method,
+    DMFT,
+    FrequencyMesh,
     HoppingMatrix,
     HubbardKanamoriModel,
     LatticeModelHamiltonian,
-    FrequencyMesh,
+    Method,
     TimeMesh,
-    DMFT,
 )
-from runschema.system import System, Atoms
+from runschema.run import Program, Run
+from runschema.system import Atoms, System
+from simulationworkflowschema import SinglePoint
+
+from nomad_parser_dmft.parsers.utils import (
+    BeyondDFTWorkflowsParser,
+    HrParser,
+    WOutParser,
+    get_files,
+)
 from nomad_parser_dmft.parsers.w2dynamics.legacy.metainfo.w2dynamics import (
     x_w2dynamics_axes,
-    x_w2dynamics_quantities,
-    x_w2dynamics_config_parameters,
     x_w2dynamics_config_atoms_parameters,
+    x_w2dynamics_config_parameters,
+    x_w2dynamics_quantities,
 )
-
-from nomad_parser_dmft.parsers.utils import get_files, BeyondDFTWorkflowsParser, WOutParser, HrParser
-
 
 re_n = r'[\n\r]'
 
@@ -324,7 +328,7 @@ class LegacyW2DynamicsParser(BeyondDFTWorkflowsParser):
         sec_config.x_w2dynamics_config_general = config_general
         sec_config.x_w2dynamics_config_qmc = config_qmc
         # Parse Method.x_w2dynamics_config atoms quantities
-        for i in range(data.attrs.get(f'general.nat', 0)):
+        for i in range(data.attrs.get('general.nat', 0)):
             sec_config_subsection = x_w2dynamics_config_atoms_parameters()
             sec_config.x_w2dynamics_config_atoms.append(sec_config_subsection)
             for key in data.attrs.keys():
@@ -340,11 +344,11 @@ class LegacyW2DynamicsParser(BeyondDFTWorkflowsParser):
         # DMFT section
         sec_dmft = DMFT()
         sec_method.dmft = sec_dmft
-        sec_dmft.n_impurities = data.attrs.get(f'general.nat', 0)
-        if data.attrs.get(f'general.beta'):
-            sec_dmft.inverse_temperature = data.attrs.get(f'general.beta') / ureg.eV
-        if data.attrs.get(f'general.magnetism'):
-            sec_dmft.magnetic_state = data.attrs.get(f'general.magnetism') + 'magnetic'
+        sec_dmft.n_impurities = data.attrs.get('general.nat', 0)
+        if data.attrs.get('general.beta'):
+            sec_dmft.inverse_temperature = data.attrs.get('general.beta') / ureg.eV
+        if data.attrs.get('general.magnetism'):
+            sec_dmft.magnetic_state = data.attrs.get('general.magnetism') + 'magnetic'
         corr_orbs_per_atoms = []
         occ_per_atoms = []
         for i in range(sec_dmft.n_impurities):
@@ -355,8 +359,8 @@ class LegacyW2DynamicsParser(BeyondDFTWorkflowsParser):
                 i
             ].x_w2dynamics_np
             corr_orbs_per_atoms.append(nd + np)
-            if data.attrs.get(f'general.totdens'):
-                occ_per_atoms.append(data.attrs.get(f'general.totdens'))
+            if data.attrs.get('general.totdens'):
+                occ_per_atoms.append(data.attrs.get('general.totdens'))
         sec_dmft.n_correlated_orbitals = corr_orbs_per_atoms
         sec_dmft.n_electrons = occ_per_atoms
         sec_dmft.impurity_solver = 'CT-HYB'
@@ -420,6 +424,7 @@ class LegacyW2DynamicsParser(BeyondDFTWorkflowsParser):
             sec_scc.scf_iteration.append(sec_scf_iteration)
             if self.archive.m_context:
                 with self.archive.m_context.raw_file(filename, farg) as f:
+                    print(f)  # ! fix this
                     for subkey in self.data.get(key).keys():
                         parameter = self.data.get(key).get(subkey)
                         if subkey == 'mu':
@@ -552,7 +557,7 @@ class LegacyW2DynamicsParser(BeyondDFTWorkflowsParser):
                     for i in range(n_atoms):
                         value = (
                             self.data.get(key)
-                            .get(f'ineq-001')
+                            .get('ineq-001')
                             .get('occ')
                             .get('value')[:]
                         )
@@ -633,8 +638,8 @@ class LegacyW2DynamicsParser(BeyondDFTWorkflowsParser):
             filepath_stripped = self.filepath.split('raw/')[-1]
             try:
                 # For automatic workflows
-                from nomad.search import search
                 from nomad.app.v1.models import MetadataRequired
+                from nomad.search import search
 
                 upload_id = self.archive.metadata.upload_id
                 search_ids = search(

@@ -17,8 +17,8 @@
 #
 
 import pytest
-
 from nomad.datamodel import EntryArchive
+
 from nomad_parser_dmft.parsers.w2dynamics.parser import W2DynamicsParser
 
 
@@ -34,7 +34,9 @@ def parser():
 def test_srvo3(parser):
     archive = EntryArchive()
     parser.parse(
-        'tests/data/w2dynamics/srvo3/SrVO3_beta60-2021-12-03-Fri-13-38-46.hdf5', archive, None
+        'tests/data/w2dynamics/srvo3/SrVO3_beta60-2021-12-03-Fri-13-38-46.hdf5',
+        archive,
+        None,
     )
 
     # Run tests
