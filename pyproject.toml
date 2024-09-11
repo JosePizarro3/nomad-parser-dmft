@@ -1,0 +1,136 @@
+[build-system]
+requires = ["setuptools>=61.0.0", "setuptools-scm>=8.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+classifiers = [
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: Apache Software License",
+]
+name = "nomad-parser-dmft"
+description = "A compilation of NOMAD parsers for input/output files of DMFT codes."
+dynamic = ["version"]
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+    { name = "Jose Pizarro", email = "jose.pizarro@physik.hu-berlin.de" },
+]
+maintainers = [
+    { name = "Jose Pizarro", email = "jose.pizarro@physik.hu-berlin.de" },
+]
+license = { file = "LICENSE" }
+dependencies = [
+    "nomad-lab>=1.3.0",
+    "nomad-simulations>=0.0.6",
+    "nomad-schema-plugin-run>=1.0.1",
+    "nomad-schema-plugin-simulation-workflow>=1.0.1",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/JosePizarro3/nomad-parser-dmft"
+"Bug Tracker" = "https://github.com/JosePizarro3/nomad-parser-dmft/issues"
+"Documentation" = "https://JosePizarro3.github.io/nomad-parser-dmft/"
+
+[project.optional-dependencies]
+dev = [
+    "mypy==1.0.1",
+    "ruff",
+    "pytest",
+    "pytest-timeout",
+    "pytest-cov",
+    "structlog",
+]
+
+[tool.uv]
+index-url = "https://gitlab.mpcdf.mpg.de/api/v4/projects/2187/packages/pypi/simple"
+
+[tool.ruff]
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
+]
+
+# Same as Black.
+line-length = 88
+indent-width = 4
+
+
+[tool.ruff.lint]
+select = [
+    # pycodestyle
+    "E",
+    # Pyflakes
+    "F",
+    # pyupgrade
+    "UP",
+    # isort
+    "I",
+    # pylint
+    "PL",
+]
+
+ignore = [
+    "F403", # 'from module import *' used; unable to detect undefined names
+]
+
+fixable = ["ALL"]
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+# this is entirely optional, you can remove this if you wish to
+[tool.ruff.format]
+# use single quotes for strings.
+quote-style = "single"
+
+# indent with spaces, rather than tabs.
+indent-style = "space"
+
+# Like Black, respect magic trailing commas.
+skip-magic-trailing-comma = false
+
+# Like Black, automatically detect the appropriate line ending.
+line-ending = "auto"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project.entry-points.'nomad.plugin']
+edmft_parser_entry_point = "nomad_parser_dmft:edmft_parser_entry_point"
+soliddmft_parser_entry_point = "nomad_parser_dmft:soliddmft_parser_entry_point"
+w2dynamics_parser_entry_point = "nomad_parser_dmft:w2dynamics_parser_entry_point"
+schema_package_entry_point = "nomad_parser_dmft.schema_packages:schema_package_entry_point"
+
+
+[tool.cruft]
+# Avoid updating workflow files, this leads to permissions issues
+skip = [".github/*"]
