@@ -15,7 +15,7 @@ from nomad.config import config
 from nomad_parser_dmft.parsers.w2dynamics.legacy.parser import LegacyW2DynamicsParser
 
 configuration = config.get_plugin_entry_point(
-    'nomad_parser_dmft:w2dynamics_parser_entry_point'
+    'nomad_parser_dmft.parsers:w2dynamics_parser_entry_point'
 )
 
 
