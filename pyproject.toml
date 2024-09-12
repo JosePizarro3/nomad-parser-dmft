@@ -139,9 +139,9 @@ package-dir = { "" = "src" }
 where = ["src"]
 
 [project.entry-points.'nomad.plugin']
-edmft_parser_entry_point = "nomad_parser_dmft:edmft_parser_entry_point"
-soliddmft_parser_entry_point = "nomad_parser_dmft:soliddmft_parser_entry_point"
-w2dynamics_parser_entry_point = "nomad_parser_dmft:w2dynamics_parser_entry_point"
+edmft_parser_entry_point = "nomad_parser_dmft.parsers:edmft_parser_entry_point"
+soliddmft_parser_entry_point = "nomad_parser_dmft.parsers:soliddmft_parser_entry_point"
+w2dynamics_parser_entry_point = "nomad_parser_dmft.parsers:w2dynamics_parser_entry_point"
 schema_package_entry_point = "nomad_parser_dmft.schema_packages:schema_package_entry_point"
 
 
